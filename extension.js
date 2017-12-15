@@ -25,6 +25,7 @@ const FOREX_ONLINE_STATUS = 'online-status';
 const QUOTES_URL = 'http://quotes.instaforex.com/get_quotes.php';
 const UP_POINTING = String.fromCharCode(9650);
 const DOWN_POINTING = String.fromCharCode(9660);
+const SERVER_TIME_GMT_DIFF = 10800;
 
 let _httpSession;
 
@@ -64,18 +65,18 @@ const ForexIndicator = new Lang.Class({
         let separator = new PopupMenu.PopupSeparatorMenuItem();
         this.menu.addMenuItem(separator);
 
-        let item = new PopupMenu.PopupMenuItem(_("Reload"));
+        item = new PopupMenu.PopupMenuItem(_("Reload"));
         item.connect('activate', Lang.bind(this, function() {
             this._online_status = true;
             this._refresh();
         }));
         this.menu.addMenuItem(item);
 
-        let item = new PopupMenu.PopupMenuItem(_("Settings"));
+        item = new PopupMenu.PopupMenuItem(_("Settings"));
         item.connect('activate', Lang.bind(this, this._onPreferencesActivate));
         this.menu.addMenuItem(item);
 
-        let item = new PopupMenu.PopupMenuItem(_("Offline / Online"));
+        item = new PopupMenu.PopupMenuItem(_("Offline / Online"));
         item.connect('activate', Lang.bind(this, this._setOffline));
         this.menu.addMenuItem(item);
     },
@@ -151,10 +152,10 @@ const ForexIndicator = new Lang.Class({
     _refreshUI: function(data) {
         for (let i in data) {
             this.symbol.set_text(data[i].symbol);
-            this.ask.set_text(data[i].ask);
-            this.bid.set_text(data[i].bid);
-            this.change.set_text(data[i].change);
-            let date = new Date((data[i].lasttime - 7200) * 1000);
+            this.ask.set_text(data[i].ask.toString());
+            this.bid.set_text(data[i].bid.toString());
+            this.change.set_text(data[i].change.toString());
+            let date = new Date((data[i].lasttime - SERVER_TIME_GMT_DIFF) * 1000);
             this.lasttime.set_text(date.toLocaleString());
         }
 
